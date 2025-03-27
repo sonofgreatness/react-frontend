@@ -20,4 +20,23 @@ A  dhis2 software platform for collecting, managing, analyzing, visualizing and 
  
  [Linux installation](https://docs.dhis2.org/en/manage/getting-started/automated-install-on-ubuntu.html)
 
+## Usage 
+[Refer to dhis2 tutorials](https://docs.dhis2.org/en/use/user-guides/dhis-core-version-241/additional-information/dhis2-tutorials.html)
+
+## Development setup 
+ refer to Installation section above 
+
+## Deployment 
+[Refer to dhis2 documentations](https://docs.dhis2.org/en/manage/hosting/requirements.html)
+
+## Contributing 
+
+
+## Licence 
+
+
+## Authors & Acknowledgments
+
+## Troubleshooting & FAQs
+
 
