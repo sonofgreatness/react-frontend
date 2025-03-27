@@ -3,9 +3,9 @@ A  dhis2 software platform for collecting, managing, analyzing, visualizing and 
 
  <p align="center">
  
-  <img src="https://sonofgreatness.github.io/image-holder/images/Dashboard 1.png" width="250">
-  <img src="https://sonofgreatness.github.io/image-holder/images/Dashboard.png" width="250">
-  <img src="https://sonofgreatness.github.io/image-holder/images/Login Page.png" width="250">
+  <img src="https://sonofgreatness.github.io/image-holder/images/Dashboard 1.png" width="500">
+  <img src="https://sonofgreatness.github.io/image-holder/images/Dashboard.png" width="500">
+  <img src="https://sonofgreatness.github.io/image-holder/images/Login Page.png" width="500">
 </p>
 
 
