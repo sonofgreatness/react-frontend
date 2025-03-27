@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "https://django2-nine.vercel.app/api"; // Change when deployed
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000/api"
+    : "https://django2-nine.vercel.app/api";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -29,3 +32,4 @@ function App() {
 }
 
 export default App;
+
