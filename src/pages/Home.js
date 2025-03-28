@@ -4,7 +4,7 @@ import AuthService from "../services/AuthService";
 
 const API_URL =
   window.location.hostname === "localhost"
-    ? "http://localhost:8000/api"
+    ? "https://django2-nine.vercel.app/api"
     : "https://django2-nine.vercel.app/api";
 
 const Home = () => {
