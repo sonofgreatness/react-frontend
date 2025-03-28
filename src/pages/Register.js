@@ -21,7 +21,7 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/register/', formData);
+      await axios.post('https://django2-nine.vercel.app/api/register/', formData);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
       setError(error.response?.data?.error || "An error occurred");
