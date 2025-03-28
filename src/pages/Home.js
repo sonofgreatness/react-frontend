@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import AuthService from "../services/AuthService";
 
 const API_URL =
   window.location.hostname === "localhost"
@@ -11,15 +12,21 @@ const Home = () => {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    axios.get(`${API_URL}/get/`)
-      .then(response => setMessage(response.data.message))
+    axios
+      .get(`${API_URL}/get-entity/`, { headers: AuthService.getAuthHeader() })
+      .then((response) => setMessage(response.data.message))
       .catch(() => setMessage("No data found"));
   }, []);
 
   const handleSubmit = () => {
-    axios.post(`${API_URL}/add/`, { name: "Test", message: input })
-      .then(response => setMessage(response.data.message))
-      .catch(error => console.error(error));
+    axios
+      .post(
+        `${API_URL}/add-entity/`,
+        { name: "Test", message: input },
+        { headers: AuthService.getAuthHeader() }
+      )
+      .then((response) => setMessage(response.data.message))
+      .catch((error) => console.error(error));
   };
 
   return (
