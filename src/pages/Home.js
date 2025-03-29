@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AuthService from "../services/AuthService";
+import  util  from "../utils/util"
 
-const API_URL =
-  window.location.hostname === "localhost"
-    ? "https://django2-nine.vercel.app/api"
-    : "https://django2-nine.vercel.app/api";
+const API_URL = util.getAPIURL()
+ 
 
 const Home = () => {
   const [message, setMessage] = useState("");

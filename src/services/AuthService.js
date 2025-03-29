@@ -1,22 +1,37 @@
 import axios from "axios";
+import util from "../utils/util"
 
-const API_URL =
-  window.location.hostname === "localhost"
-    ? "https://django2-nine.vercel.app/api"
-    : "https://django2-nine.vercel.app/api";
+const API_URL = util.getAPIURL(); 
+
 
 class AuthService {
-  static login(username, password) {
-    return axios.post(`${API_URL}/login/`, { username, password }).then((response) => {
+
+
+
+
+  static async login(username, password) {
+    try {
+      const response = await axios.post(`${API_URL}/login/`, { username, password });
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
+        console.log("logged in successfully");
+        window.dispatchEvent(new Event("authChange"));
       }
       return response.data;
-    });
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
+      throw error; // Re-throw the error so it can be caught in handleSubmit
+    }
+  }
+
+  static register(){
+    
   }
 
   static logout() {
-    localStorage.removeItem("user");
+	 
+	  localStorage.removeItem("user");
+    window.dispatchEvent(new Event("authChange"));
   }
 
   static getCurrentUser() {
@@ -24,6 +39,7 @@ class AuthService {
   }
 
   static isAuthenticated() {
+    console.log("isAuthenticated called value :", JSON.stringify(localStorage.getItem("user")))
     return !!localStorage.getItem("user");
   }
 

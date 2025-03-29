@@ -6,7 +6,7 @@ const NavBar = () => {
     <nav className="sidebar">
       <h2>SpotterAI</h2>
       <ul>
-        <li><Link to="/map-data">Map Data</Link></li>
+        <li><Link to="/trips">Manage Trips</Link></li>
         <li><Link to="/log-trip-data">Log Trip Data (ELD)</Link></li>
         <li><Link to="/view-eld">View ELD</Link></li>
         <li><Link to="/view-hour-cycle">View Hour Cycle</Link></li>

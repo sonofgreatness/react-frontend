@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+import util from "../utils/util"
+
 
 const Registration = () => {
+  const API_URL = util.getAPIURL(); 
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -21,7 +25,8 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://django2-nine.vercel.app/api/register/', formData);
+	   console.log ("register called");
+      await axios.post(`${API_URL}/register/`, formData);
       navigate('/login'); // Redirect to login page after successful registration
     } catch (error) {
       setError(error.response?.data?.error || "An error occurred");
@@ -29,8 +34,8 @@ const Registration = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow-lg" style={{ maxWidth: '400px' }}>
+    <div className="container d-flex justify-content-center align-items-center vh-100 vw-60">
+      <div className="card p-4 shadow-lg" style={{ maxWidth: '600px' }}>
         <h3 className="text-center mb-3">Register</h3>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>

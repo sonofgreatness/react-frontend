@@ -5,10 +5,12 @@ import NavBar from "./NavBar";
 import Header from "./Header";
 import Footer from "./Footer";
 import './App.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'leaflet/dist/leaflet.css';
 const AppContent = () => {
   const location = useLocation();
-  const hideNav = location.pathname === "/login" || location.pathname === "/register";
+  const hideNav = location.pathname === "/login" || location.pathname === "/register"|| location.pathname ==="/";
 
   return (
     <div className="app-layout">
