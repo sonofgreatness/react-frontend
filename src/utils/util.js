@@ -21,8 +21,7 @@ class util {
         : "https://django2-nine.vercel.app/api";
     }
 
-    getAPIADMINURL  = () =>{
-
+    getAPIADMINURL = () =>{
         return   window.location.hostname === "localhost"
         ? "http://localhost:8000/admin"
         : "https://django2-nine.vercel.app/admin";

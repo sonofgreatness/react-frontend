@@ -39,7 +39,7 @@ class AuthService {
   }
 
   static isAuthenticated() {
-    console.log("isAuthenticated called value :", JSON.stringify(localStorage.getItem("user")))
+    console.log("isAuthenticated called value ");
     return !!localStorage.getItem("user");
   }
 

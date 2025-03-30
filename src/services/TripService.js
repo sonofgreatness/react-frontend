@@ -10,7 +10,7 @@ class TripService {
   }
 
   static async getTripDetails(tripId) {
-    return axios.get(`${API_URL}/trips/${tripId}/details/`, { headers: authHeader() });
+    return axios.get(`${API_URL}/trips/${tripId}/detail/`, { headers: authHeader() });
   }
 
   static async createTrip(tripData) {
@@ -31,15 +31,17 @@ class TripService {
 
   }
   static async createTripDetails(tripId, tripDetails) {
-    return axios.post(`${API_URL}/trips/${tripId}/details/`, tripDetails, { headers: authHeader() });
+    return axios.post(`${API_URL}/trips/${tripId}/detail/create/`, tripDetails, { headers: authHeader() });
   }
 
   static async updateTripDetails(tripId, detailId, tripDetails) {
-    return axios.put(`${API_URL}/trips/${tripId}/details/${detailId}/`, tripDetails, { headers: authHeader() });
+    return axios.put(`${API_URL}/trips/${tripId}/detail/update/`, tripDetails, { headers: authHeader() });
+ 
+ 
   }
 
-  static async deleteTripDetails(tripId, detailId) {
-    return axios.delete(`${API_URL}/trips/${tripId}/details/${detailId}/`, { headers: authHeader() });
+  static async deleteTripDetails(tripId) {
+    return axios.delete(`${API_URL}/trips/detail/update/${tripId}/`, { headers: authHeader() });
   }
 }
 
