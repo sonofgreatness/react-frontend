@@ -18,6 +18,42 @@ const CreateELD = () => {
   const { selectedLogDetailId } = useParams();
   const [lines, setLines] = useState([]);
   const [currentLine, setCurrentLine] = useState([]);
+  
+  const [showModal, setShowModal] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [indecesToUpdate, setindecesToUpdate] = useState([]);
+   
+  const updateChangeData = (datapoints) => {
+    console.log("update change datapoints size", JSON.stringify(datapoints.length));
+    const mydata = [];
+    for (let x = 1; x < datapoints.length; x++) {
+        // Log the entire data point to check for undefined values
+        console.log(`Index ${x}:`, JSON.stringify(datapoints[x]));
+        if (!datapoints[x] || !datapoints[x - 1]) {
+            console.log(`Skipping index ${x} because it is undefined/null`);
+            continue;  // Skip undefined/null values
+        }
+        console.log("looper ", JSON.stringify(datapoints[x].activity));
+        if (datapoints[x].activity !== datapoints[x - 1].activity) {
+            mydata.push(x);
+        }
+    }
+    console.log("indices to update ", JSON.stringify(mydata));
+    setindecesToUpdate(mydata); 
+};
+
+
+  const saveDataPoints = (dataPoints) => {
+    console.log("save Datapoints called")
+    localStorage.setItem('x_datapoints', JSON.stringify(dataPoints));
+  };
+  
+  const loadDataPoints = () => {
+    const storedData = localStorage.getItem('x_datapoints');
+    return storedData ? JSON.parse(storedData) : [];
+  };
+
+  
 
   const handleMouseDown = (e) => {
     const { x, y } = e.target.getStage().getPointerPosition();
@@ -30,23 +66,26 @@ const CreateELD = () => {
     setCurrentLine([{ x: snappedX, y: snappedY }]);
   };
   
+
+
+
   const handleMouseMove = (e) => {
     if (currentLine.length === 0) return;
-    const { x, y } = e.target.getStage().getPointerPosition();
-    // Snap to valid X positions (strictly 96)
+  
+    const { x } = e.target.getStage().getPointerPosition();
     const xIndex = Math.round(x / X_GAP);
     const snappedX = Math.min(Math.max(xIndex, 0), X_STEPS - 1) * X_GAP;
-    // Snap to valid Y positions (strictly 4)
-    const yIndex = Math.round(y / Y_GAP);
-    const snappedY = Math.min(Math.max(yIndex, 0), Y_STEPS - 1) * Y_GAP;
-    // Only allow distinct x-coordinates (avoid unnecessary in-between points)
-    if (currentLine.length > 0) {
-      const lastX = currentLine[currentLine.length - 1].x;
-      if (snappedX === lastX) return;  // Ignore redundant points
-    }
+    
+    // Keep y constant (use the first y position in currentLine)
+    const snappedY = currentLine[0].y;
+  
+    // Avoid duplicate x-coordinates
+    const lastX = currentLine[currentLine.length - 1].x;
+    if (snappedX === lastX) return;
   
     setCurrentLine([...currentLine, { x: snappedX, y: snappedY }]);
   };
+
   
 
   const handleMouseUp = () => {
@@ -55,19 +94,43 @@ const CreateELD = () => {
   };
 
   const processDataPoints = () => {
-    const processedData = lines.flatMap(line =>
+    let processedData = [];
+    let lastActivity = null;
+    let lastX = null;
+  const rawData = lines.flatMap(line =>
       line.map(point => ({
         x_datapoint: Math.round(point.x / X_GAP) + 1,
         activity: ACTIVITIES[Math.round(point.y / Y_GAP)],
         remark: '',
       }))
     );
+  rawData.sort((a, b) => a.x_datapoint - b.x_datapoint);
+    for (let i = 0; i < rawData.length; i++) {
+      const { x_datapoint, activity } = rawData[i];
+     if (lastX !== null && x_datapoint > lastX + 1) {
+        for (let j = lastX + 1; j < x_datapoint; j++) {
+          processedData.push({ x_datapoint: j, activity: lastActivity, remark: '' });
+        }
+      }
+      if (processedData.length > 0 && processedData[processedData.length - 1].x_datapoint === x_datapoint) {
+        processedData[processedData.length - 1].activity = activity; // Override with the latest activity
+      } else {
+        processedData.push({ x_datapoint, activity, remark: '' });
+      }
+      lastX = x_datapoint;
+      lastActivity = activity;
+    }
     return processedData;
   };
+  
 
   const handleSubmit = async () => {
     try {
       const data = processDataPoints();
+       saveDataPoints(data); 
+       updateChangeData(data); 
+       setShowModal(true); 
+ 
       /*await Promise.all(
         data.map((log) =>
           ActivityLogService.createActivityLog(selectedLogDetailId, log)

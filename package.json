@@ -16,7 +16,7 @@
     "react-icons": "^5.5.0",
     "react-konva": "^19.0.3",
     "react-leaflet": "^5.0.0",
-    "react-router-dom": "^7.4.0",
+    "react-router-dom": "^7.4.1",
     "react-scripts": "5.0.1",
     "react-sketch": "^0.5.1",
     "react-sketch-canvas": "^6.2.0",
