@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import { Stage, Layer, Line, Text } from 'react-konva';
+import { useNavigate } from 'react-router-dom';
 import ActivityLogService from '../services/ActivityLogService';
 import { useParams } from 'react-router-dom';
+import util from '../utils/util'; 
 
 const WIDTH = 900;
 const HEIGHT = 400;
@@ -16,31 +18,31 @@ const COLORS = ['red', 'blue', 'green', 'purple'];
 
 const CreateELD = () => {
   const { selectedLogDetailId } = useParams();
-  const [lines, setLines] = useState([]);
+  const [lines, setLines] = useState([]);  
   const [currentLine, setCurrentLine] = useState([]);
-  
-  const [showModal, setShowModal] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [indecesToUpdate, setindecesToUpdate] = useState([]);
-   
+
+  const  navigate = useNavigate(); 
+
+  //Writes indices to  localstorage 
   const updateChangeData = (datapoints) => {
     console.log("update change datapoints size", JSON.stringify(datapoints.length));
     const mydata = [];
     for (let x = 1; x < datapoints.length; x++) {
-        // Log the entire data point to check for undefined values
         console.log(`Index ${x}:`, JSON.stringify(datapoints[x]));
         if (!datapoints[x] || !datapoints[x - 1]) {
-            console.log(`Skipping index ${x} because it is undefined/null`);
-            continue;  // Skip undefined/null values
+            continue;  
         }
-        console.log("looper ", JSON.stringify(datapoints[x].activity));
+        
         if (datapoints[x].activity !== datapoints[x - 1].activity) {
             mydata.push(x);
         }
     }
     console.log("indices to update ", JSON.stringify(mydata));
-    setindecesToUpdate(mydata); 
+    localStorage.setItem('logger_indices', JSON.stringify(mydata));   
 };
+
+
+
 
 
   const saveDataPoints = (dataPoints) => {
@@ -48,12 +50,35 @@ const CreateELD = () => {
     localStorage.setItem('x_datapoints', JSON.stringify(dataPoints));
   };
   
-  const loadDataPoints = () => {
-    const storedData = localStorage.getItem('x_datapoints');
-    return storedData ? JSON.parse(storedData) : [];
-  };
+  const loadDataPoints = () =>  util.getXDatapoints(); 
 
-  
+  const putDummyRemarks = (indices) => {
+    const storedData = loadDataPoints();
+    console.log("Stored Data:", storedData);
+    if (!storedData || !Array.isArray(storedData)) {
+        console.log("Stored Data is invalid.");
+        return; 
+    }
+    console.log("put dummy called2");
+    console.log("Indices to Update:",indices);
+
+    if (!Array.isArray(indices) || indices.length === 0) {
+        console.log("indecesToUpdate is empty or not an array.");
+        return;
+    }
+    indices.forEach(index => {
+        console.log("Processing index:", index);
+        
+        if (index >= 0 && index < storedData.length) {
+            console.log(`Updating remark at index ${index}`);
+            storedData[index].remark = "dummy remark"; 
+        } else {
+            console.log(`Index ${index} is out of bounds.`);
+        }
+    });
+    console.log("Final Updated Data:", storedData);
+    saveDataPoints(storedData); // Save updated data back to localStorage
+};
 
   const handleMouseDown = (e) => {
     const { x, y } = e.target.getStage().getPointerPosition();
@@ -75,16 +100,13 @@ const CreateELD = () => {
     const { x } = e.target.getStage().getPointerPosition();
     const xIndex = Math.round(x / X_GAP);
     const snappedX = Math.min(Math.max(xIndex, 0), X_STEPS - 1) * X_GAP;
-    
-    // Keep y constant (use the first y position in currentLine)
+
     const snappedY = currentLine[0].y;
-  
-    // Avoid duplicate x-coordinates
+
     const lastX = currentLine[currentLine.length - 1].x;
     if (snappedX === lastX) return;
   
-    setCurrentLine([...currentLine, { x: snappedX, y: snappedY }]);
-  };
+    setCurrentLine([...currentLine, { x: snappedX, y: snappedY }]);};
 
   
 
@@ -92,58 +114,59 @@ const CreateELD = () => {
     setLines([...lines, currentLine]);
     setCurrentLine([]);
   };
-
   const processDataPoints = () => {
-    let processedData = [];
-    let lastActivity = null;
-    let lastX = null;
-  const rawData = lines.flatMap(line =>
-      line.map(point => ({
-        x_datapoint: Math.round(point.x / X_GAP) + 1,
-        activity: ACTIVITIES[Math.round(point.y / Y_GAP)],
-        remark: '',
-      }))
+    let processedData = lines.flatMap(line =>
+        line.map(point => ({
+            x_datapoint: Math.round(point.x / X_GAP) + 1,
+            activity: ACTIVITIES[Math.round(point.y / Y_GAP)],
+            remark: '',
+        }))
     );
-  rawData.sort((a, b) => a.x_datapoint - b.x_datapoint);
-    for (let i = 0; i < rawData.length; i++) {
-      const { x_datapoint, activity } = rawData[i];
-     if (lastX !== null && x_datapoint > lastX + 1) {
-        for (let j = lastX + 1; j < x_datapoint; j++) {
-          processedData.push({ x_datapoint: j, activity: lastActivity, remark: '' });
+    processedData.sort((a, b) => a.x_datapoint - b.x_datapoint);
+
+    let filledData = [];
+    let lastActivity = "UNKNOWN"; // Default activity
+    let index = 0; // Track position in processedData
+
+    for (let i = 1; i <= 96; i++) {
+       while (index < processedData.length && processedData[index].x_datapoint < i) {
+            index++;
         }
-      }
-      if (processedData.length > 0 && processedData[processedData.length - 1].x_datapoint === x_datapoint) {
-        processedData[processedData.length - 1].activity = activity; // Override with the latest activity
-      } else {
-        processedData.push({ x_datapoint, activity, remark: '' });
-      }
-      lastX = x_datapoint;
-      lastActivity = activity;
+
+        if (index < processedData.length && processedData[index].x_datapoint === i) {
+            // Exact match found, update lastActivity and push the data
+            lastActivity = processedData[index].activity;
+            filledData.push(processedData[index]);
+        } else {
+            // No exact match, use last known activity
+            filledData.push({
+                x_datapoint: i,
+                activity: lastActivity,
+                remark: '',
+            });
+        }
     }
-    return processedData;
-  };
-  
+
+    return filledData;
+};
+
+
 
   const handleSubmit = async () => {
     try {
       const data = processDataPoints();
-       saveDataPoints(data); 
-       updateChangeData(data); 
-       setShowModal(true); 
- 
-      /*await Promise.all(
-        data.map((log) =>
-          ActivityLogService.createActivityLog(selectedLogDetailId, log)
-        )
-      );*/ 
-      console.log("Activity logs created", JSON.stringify(data.length));  
-      console.log(JSON.stringify(data)); 
-      alert('Activity Logs created successfully!',JSON.stringify(data));
+      //write Data to localstorage
+      saveDataPoints(data);
+      //write indices to local storage 
+      updateChangeData(data);
+      navigate(`/log-books/create-eld/${selectedLogDetailId}`)
     } catch (error) {
       console.error('Error sending data:', error);
       alert('Failed to send activity logs.');
     }
   };
+
+
 
   return (
     <div>
@@ -224,8 +247,7 @@ const CreateELD = () => {
       <Button onClick={handleSubmit} variant="primary" className="mt-3">
         Submit
       </Button>
-    </div>
-  );
+    </div>);
 };
 
 export default CreateELD;

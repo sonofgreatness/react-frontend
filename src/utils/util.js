@@ -12,7 +12,14 @@ class util {
     }
 
 
- 
+     getXDatapoints = () =>{
+        const storedData = localStorage.getItem('x_datapoints');
+    return storedData ? JSON.parse(storedData) : [];
+    }
+     getXIndices = () =>{
+        const storedData = localStorage.getItem('logger_indices');
+        return storedData ? JSON.parse(storedData) : [];
+    }
 
     getAPIURL = () =>  {
 

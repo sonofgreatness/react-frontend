@@ -18,16 +18,20 @@ class ActivityLogService  {
       throw error;
     }
   }
-    getTimeFromXDataPoint(xDataPoint){
-      console.log ("getTimeFromXDataPoint Called ",JSON.stringify(xDataPoint)); 
-     if (!(1 <= xDataPoint <= 96)) {
+  static getTimeFromXDataPoint(xDataPoint) {
+    console.log("getTimeFromXDataPoint Called", JSON.stringify(xDataPoint)); 
+
+    if (xDataPoint < 1 || xDataPoint > 96) {
         throw new Error("x-datapoint must be between 1 and 96.");
     }
-    const minutes = (xDataPoint - 1) * 15;
-    const hours = Math.floor(minutes / 60).toString();
+
+    const minutes = (xDataPoint.x_datapoint  - 1) * 15; // Convert xDataPoint to minutes
+    const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return `${hours} : ${remainingMinutes.toString().padStart(2, '0')}`;
-  }
+
+    return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+}
+
 };
 
 export default ActivityLogService;
