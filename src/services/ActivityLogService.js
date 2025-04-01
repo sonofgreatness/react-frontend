@@ -25,7 +25,7 @@ static async getLogDetailHours(logBookId){
     const response = await axios.get(
       `${API_BASE_URL}/log-summary/${logBookId}/`
      ,{ headers: authHeader() });
-     console.log("getLogHours",JSON.stringify(response.data)); 
+      
     return response.data;
   } catch (error) {
     console.error('Error getting activity log hours:', error);
@@ -41,7 +41,6 @@ static async getActivityLog(logBookId){
     const response = await axios.get(
       `${API_BASE_URL}/get-activity-log/${logBookId}/`
      ,{ headers: authHeader() });
-     console.log("get ALL Log Hours",JSON.stringify(response.data)); 
     return response.data;
   } catch (error) {
     console.error('Error getting all activity log:', error);
@@ -55,7 +54,7 @@ static async getAllLogDetailHours(){
     const response = await axios.get(
       `${API_BASE_URL}/log-summary/all/`
      ,{ headers: authHeader() });
-     console.log("get ALL Log Hours",JSON.stringify(response.data)); 
+     
     return response.data;
   } catch (error) {
     console.error('Error getting all activity log:', error);
