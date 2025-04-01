@@ -18,6 +18,7 @@ import EditLogDetails from "./pages/LogDetails/EditLogDetails"; // Import EditLo
 import SelectTripForLogs from "./pages/LogDetails/SelectTripForLogs"
 import CreateELD from "./pages/CreateELD";
 import LogTripData from "./pages/Trip/LogTripData";
+import ViewHoursForDay from "./pages/Trip/ViewHoursForDay";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -40,8 +41,10 @@ const AppRoutes = () => {
       
       <Route path="/log-books/create-eld/:selectedLogDetailId" element={<ProtectedRoute><LogTripData/></ProtectedRoute>} />
       
+      <Route path="/view-hour-cycle/day/:selectedLogDetailId" element={<ProtectedRoute><ViewHoursForDay /></ProtectedRoute>} />
       
       <Route path="/view-hour-cycle" element={<ProtectedRoute><ViewHourCycle /></ProtectedRoute>} />
+    
     </Routes>
   );
 };

@@ -19,6 +19,20 @@ class ActivityLogService  {
     }
   }
 
+static async getLogDetailHours(logBookId){
+  
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/log-summary/${logBookId}/`
+     ,{ headers: authHeader() });
+     console.log("getLogHours",JSON.stringify(response.data)); 
+    return response.data;
+  } catch (error) {
+    console.error('Error creating activity log:', error);
+    throw error;
+  }
+}
+
 
   static getTimeFromXDataPoint(xDataPoint) {
     console.log("getTimeFromXDataPoint Called", JSON.stringify(xDataPoint)); 

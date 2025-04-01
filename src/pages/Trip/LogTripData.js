@@ -36,7 +36,7 @@ const LogTripData = () => {
         });
         localStorage.setItem("x_datapoints", JSON.stringify(storedData));
         await logActivies();
-        navigate("/view-hour-cycle");
+        navigate(`/view-hour-cycle/day/${selectedLogDetailId}`);
     } catch (error) {
         console.error("Error submitting remarks:", error);
     } finally {
