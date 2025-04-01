@@ -55,9 +55,11 @@ const ManageLogDetails = () => {
           {tripData.start_date} - {tripData.end_date || "Ongoing"})
         </h6>
       )}
+      {!logDetails.length && (
       <Button as={Link} to={`/trips/${tripId}/log/create`} variant="primary">
         Add Log Details
-      </Button>
+      </Button>)
+      }
       {logDetails && logDetails.length > 0 && (
         <Table striped bordered hover className="mt-3">
           <thead>

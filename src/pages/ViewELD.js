@@ -56,8 +56,8 @@ const ViewELD= () => {
        await LogBookService.createLogBook(selectedLogDetailId, { date });
        navigate(`/log-books/${selectedLogDetailId}`); // Navigate to log book details
      } catch (err) {
-       console.error("Error creating log book:", err);
-       setError("Failed to create log book.");
+       console.error("Error creating log book: already exists", err);
+       setError("Failed to create log book.already exists");
      }
    };
  

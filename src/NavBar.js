@@ -9,7 +9,7 @@ const NavBar = () => {
         <li><Link to="/trips">Manage Trips</Link></li>
         <li><Link to="/log-trip-data">Log Trip Data (ELD)</Link></li>
         <li><Link to="/view-eld">Record ELD</Link></li>
-        <li><Link to="/view-hour-cycle">View Hour Cycle</Link></li>
+        <li><Link to="/view-hour-cycle">Download ELD</Link></li>
         <li><Link to="/">Welcome</Link></li>
         <li><Link to="/home">Home</Link></li>
       </ul>

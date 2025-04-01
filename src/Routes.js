@@ -7,7 +7,7 @@ import TripDetails from "./pages/Trip/TripDetails";
 import CreateTripDetails from "./pages/Trip/CreateTripDetails";
 import ViewELD from "./pages/ViewELD";
 import Welcome from "./pages/Welcome";
-import ViewHourCycle from "./pages/ViewHourCycle";
+import DownloadELD from "./pages/DownloadELD";
 import EditTrip from "./pages/Trip/EditTrip";
 import Registration from "./pages/Register";
 import Login from "./pages/Login";
@@ -43,7 +43,7 @@ const AppRoutes = () => {
       
       <Route path="/view-hour-cycle/day/:selectedLogDetailId" element={<ProtectedRoute><ViewHoursForDay /></ProtectedRoute>} />
       
-      <Route path="/view-hour-cycle" element={<ProtectedRoute><ViewHourCycle /></ProtectedRoute>} />
+      <Route path="/view-hour-cycle" element={<ProtectedRoute><DownloadELD /></ProtectedRoute>} />
     
     </Routes>
   );

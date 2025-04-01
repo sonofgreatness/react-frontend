@@ -28,11 +28,42 @@ static async getLogDetailHours(logBookId){
      console.log("getLogHours",JSON.stringify(response.data)); 
     return response.data;
   } catch (error) {
-    console.error('Error creating activity log:', error);
+    console.error('Error getting activity log hours:', error);
     throw error;
   }
 }
 
+
+
+static async getActivityLog(logBookId){
+
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/get-activity-log/${logBookId}/`
+     ,{ headers: authHeader() });
+     console.log("get ALL Log Hours",JSON.stringify(response.data)); 
+    return response.data;
+  } catch (error) {
+    console.error('Error getting all activity log:', error);
+    throw error;
+  }
+}
+
+static async getAllLogDetailHours(){
+
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/log-summary/all/`
+     ,{ headers: authHeader() });
+     console.log("get ALL Log Hours",JSON.stringify(response.data)); 
+    return response.data;
+  } catch (error) {
+    console.error('Error getting all activity log:', error);
+    throw error;
+  }
+
+
+}
 
   static getTimeFromXDataPoint(xDataPoint) {
     console.log("getTimeFromXDataPoint Called", JSON.stringify(xDataPoint)); 
