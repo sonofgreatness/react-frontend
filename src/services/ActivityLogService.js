@@ -18,6 +18,8 @@ class ActivityLogService  {
       throw error;
     }
   }
+
+
   static getTimeFromXDataPoint(xDataPoint) {
     console.log("getTimeFromXDataPoint Called", JSON.stringify(xDataPoint)); 
 

@@ -13,7 +13,7 @@ const X_STEPS_T = 98;
 const Y_STEPS = 4;
 const X_GAP = WIDTH / X_STEPS;
 const Y_GAP = HEIGHT / Y_STEPS;
-const ACTIVITIES = ['ONDUTY', 'DRIVING', 'SLEEPER_BERTH', 'OFFDUTY'];
+const ACTIVITIES = ['ONDUTY', 'DRIVING', 'SLEEPERBERTH', 'OFFDUTY'];
 const COLORS = ['red', 'blue', 'green', 'purple'];
 
 const CreateELD = () => {
