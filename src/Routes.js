@@ -27,7 +27,6 @@ const AppRoutes = () => {
       <Route path="/" element={<Welcome />} />
       <Route path="/trips/edit/:tripId" element={<ProtectedRoute><EditTrip /></ProtectedRoute>} />
       <Route path="/log-trip-data" element={<ProtectedRoute><SelectTripForLogs /></ProtectedRoute>} />
-      <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/trips" element={<ProtectedRoute><ManageTrips /></ProtectedRoute>} />
       <Route path="/trips/create" element={<ProtectedRoute><CreateTrip /></ProtectedRoute>} />
       <Route path="/trips/:tripId/details" element={<ProtectedRoute><TripDetails /></ProtectedRoute>} />
