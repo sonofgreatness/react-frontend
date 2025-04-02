@@ -20,8 +20,8 @@ class PdfUtils {
 
     this.drawBanner(doc, pageWidth, bannerHeight);
     this.drawTripSection(doc, tripData, pageWidth, bannerHeight, tripSectionHeight);
-    this.drawChart(doc, activityLogs, pageWidth, bannerHeight + tripSectionHeight, chartHeight);
-    this.drawLogSection(doc, logData, pageWidth, bannerHeight + tripSectionHeight + chartHeight, logSectionHeight);
+    this.drawChart(doc, activityLogs,summaries, pageWidth, bannerHeight + tripSectionHeight, chartHeight);
+      this.drawLogSection(doc, logData, pageWidth, bannerHeight + tripSectionHeight + chartHeight, logSectionHeight);
 
     doc.save("ELD_Report.pdf");
   };
@@ -45,17 +45,16 @@ class PdfUtils {
     ];
     const columnWidth = pageWidth / tripInfo.length;
     const y = startY + height / 2;
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     tripInfo.forEach((text, index) => {
-      doc.text(text, columnWidth * index + 10, y, { align: "left" });
+      doc.text(text, columnWidth * index + 5, y, { align: "left" });
     });
   }
 
-  drawChart(doc, activityLogs, pageWidth, startY, height) {
+  drawChart(doc, activityLogs, summaries, pageWidth, startY, height) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-
-    canvas.width = 500;
+    canvas.width = 300;
     canvas.height = 200;
 
     const X_STEPS = 96;
@@ -69,19 +68,18 @@ class PdfUtils {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "#D3D3D3";
 
-    // Draw vertical grid lines and x-axis labels
     for (let i = 0; i <= X_STEPS; i++) {
       const x = i * X_GAP;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
+     
       if (i % 4 === 0) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
         ctx.fillText(i / 4, x, canvas.height - 5);
       }
     }
 
-    // Draw horizontal grid lines and y-axis labels
     for (let i = 0; i < ACTIVITIES.length; i++) {
       const y = i * Y_GAP;
       ctx.beginPath();
@@ -95,21 +93,91 @@ class PdfUtils {
     for (let i = 0; i < activityLogs.length - 1; i++) {
       const point = activityLogs[i];
       const nextPoint = activityLogs[i + 1];
-
       const x1 = (point.x_datapoint - 1) * X_GAP;
       const y1 = ACTIVITIES.indexOf(point.activity) * Y_GAP + Y_GAP / 2;
       const x2 = (nextPoint.x_datapoint - 1) * X_GAP;
       const y2 = ACTIVITIES.indexOf(nextPoint.activity) * Y_GAP + Y_GAP / 2;
-
       ctx.strokeStyle = COLORS[point.activity];
+     
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
+   
     }
 
     const imgData = canvas.toDataURL("image/png");
-    doc.addImage(imgData, "PNG", 10, startY + 10, pageWidth - 20, height - 20);
+    console.log("Generated image data:", imgData);
+    console.log("Chart height:", height);
+
+    doc.addImage(imgData, "PNG", 10, startY + 10, 120, height - 20);
+   
+
+    const remarksCanvas = document.createElement("canvas");
+    const remarksCtx = remarksCanvas.getContext("2d");
+    remarksCanvas.width = 300;
+    remarksCanvas.height = 100;
+  
+    remarksCtx.clearRect(0, 0, remarksCanvas.width, remarksCanvas.height);
+    remarksCtx.strokeStyle = "#D3D3D3";
+  
+    // Draw vertical grid lines
+    for (let i = 0; i <= X_STEPS; i++) {
+      const x = i * X_GAP;
+      if (i % 4 === 0) {
+      remarksCtx.beginPath();
+      remarksCtx.moveTo(x, 0);
+      remarksCtx.lineTo(x, remarksCanvas.height);
+      remarksCtx.stroke();
+      }
+    }
+  
+    // Mark points with non-empty remarks
+    remarksCtx.font = "8px Arial"; // Reduced font size
+    remarksCtx.fillStyle = "black";
+  
+    activityLogs.forEach((log) => {
+      if (log.remark && log.remark.trim() !== "") {
+        const x = (log.x_datapoint - 1) * X_GAP;
+        const y = 40; // Middle of the chart
+  
+        // Draw 45-degree slanting remark
+        remarksCtx.save();
+        remarksCtx.translate(x, y);
+        remarksCtx.rotate(-Math.PI / 4);
+        remarksCtx.fillText(log.remark, 0, 0);
+        remarksCtx.restore();
+      }
+    });
+  
+    const remarksImgData = remarksCanvas.toDataURL("image/png");
+    doc.addImage(remarksImgData, "PNG", 10, startY + height - 10, 120, 40);
+
+
+
+
+
+    doc.setFontSize(10);
+    let tableStartX = 140;
+    let tableStartY = startY + 10;
+    doc.text("Activity Summary", tableStartX, tableStartY);
+    tableStartY += 6;
+    doc.text("Activity", tableStartX, tableStartY);
+    doc.text("Hours", tableStartX + 40, tableStartY);
+    doc.text("Minutes", tableStartX + 60, tableStartY);
+    tableStartY += 4;
+    doc.line(tableStartX, tableStartY, tableStartX + 80, tableStartY);
+    tableStartY += 4;
+
+    Object.entries(summaries.sums).forEach(([activity, intervals]) => {
+      const totalMinutes = intervals * 15;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      doc.text(activity, tableStartX, tableStartY);
+      doc.text(hours.toString(), tableStartX + 40, tableStartY);
+      doc.text(minutes.toString(), tableStartX + 60, tableStartY);
+      tableStartY += 6;
+    });
   }
 
   drawLogSection(doc, logData, pageWidth, startY, height) {
